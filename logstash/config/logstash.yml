@@ -1,0 +1,3 @@
+http.host: "0.0.0.0"
+xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+path.config: C:\Users\farhe\codesss\log_analytics_project\logstash\pipeline

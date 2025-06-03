@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-generator
+  namespace: log-analytics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-generator
+  template:
+    metadata:
+      labels:
+        app: log-generator
+    spec:
+      containers:
+      - name: log-generator
+        image: log-generator:latest
+        imagePullPolicy: Never
+        volumeMounts:
+        - name: logs-volume
+          mountPath: /app/logs
+        resources:
+          limits:
+            memory: "256Mi"
+          requests:
+            memory: "128Mi"
+      volumes:
+      - name: logs-volume
+        emptyDir: {}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+  namespace: log-analytics
+data:
+  filebeat.yml: |
+    filebeat.inputs:
+    - type: log
+      enabled: true
+      paths:
+        - /var/log/app/*.log
+      fields:
+        log_type: application
+      fields_under_root: true
+
+    output.elasticsearch:
+      hosts: ["elasticsearch-service:9200"]
+      index: "filebeat-%{+yyyy.MM.dd}"
+
+    setup.kibana:
+      host: "kibana-service:5601"
+
+    logging.level: info
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: filebeat
+  namespace: log-analytics
+spec:
+  selector:
+    matchLabels:
+      app: filebeat
+  template:
+    metadata:
+      labels:
+        app: filebeat
+    spec:
+      containers:
+      - name: filebeat
+        image: docker.elastic.co/beats/filebeat:8.11.0
+        volumeMounts:
+        - name: config
+          mountPath: /usr/share/filebeat/filebeat.yml
+          subPath: filebeat.yml
+        - name: logs-volume
+          mountPath: /var/log/app
+        resources:
+          limits:
+            memory: "256Mi"
+          requests:
+            memory: "128Mi"
+      volumes:
+      - name: config
+        configMap:
+          name: filebeat-config
+      - name: logs-volume
+        emptyDir: {}
