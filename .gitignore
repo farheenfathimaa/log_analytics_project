@@ -1,0 +1,26 @@
+# Docker
+.docker/
+*.tar
+*.tar.gz
+
+# ELK Data & Logs
+elasticsearch_data/
+logs/*.log
+!logs/.gitkeep
+esdata/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Project Specific
+.vscode/
+*.backup
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db

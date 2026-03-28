@@ -90,6 +90,20 @@ log_analytics_project/
    - Create visualizations in Visualize
    - Build dashboards in Dashboard
 
+## 📈 Project in Action
+
+### 🔍 Log Discovery
+View all ingested logs in real-time within the Kibana Discover tab.
+![Kibana Discover](screenshots/discover_logs.png)
+
+### 🚨 Error Analysis
+Easily filter and analyze error logs to troubleshoot application issues.
+![Error Logs](screenshots/error_logs.png)
+
+### 📊 Log Analytics Dashboard
+A comprehensive overview of log trends, distributions, and metrics.
+![Log Analytics Dashboard](screenshots/dashboard.png)
+
 ## 📈 Sample Queries
 
 ### Elasticsearch Queries
